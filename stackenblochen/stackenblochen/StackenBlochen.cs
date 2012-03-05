@@ -104,7 +104,7 @@ namespace stackenblochen
 			}
 
 			if (Keyboard.GetState().IsKeyDown(Keys.Down))
-				dropDelay = 0.25;
+				dropDelay = 0.125;
 			else
 				dropDelay = 1;
 
