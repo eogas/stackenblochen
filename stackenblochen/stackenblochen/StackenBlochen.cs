@@ -71,7 +71,8 @@ namespace stackenblochen
 					return false;
 			}
 
-			return true;
+			// Test against edges
+			return b.InBounds();
 		}
 
 		protected override void Update(GameTime gameTime)
@@ -116,7 +117,7 @@ namespace stackenblochen
 				newBlock.Translate(new Point(0, 1));
 
 				// lock block
-				if (!newBlock.OnScreen() || !ValidPosition(newBlock))
+				if (!newBlock.AboveGround() || !ValidPosition(newBlock))
 				{
 					LockedNibbits.AddRange(CurrentBlock.EmancipateNibbits());
 					CurrentBlock = new Block(GraphicsDevice);

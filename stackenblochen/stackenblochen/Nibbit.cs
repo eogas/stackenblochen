@@ -69,7 +69,13 @@ namespace stackenblochen
 			}
 		}
 
-		public bool OnScreen(Point offset)
+		public bool InBounds(Point offset)
+		{
+			return offset.X + Position.X >= 0 &&
+				offset.X + Position.X < Constants.PLAYFIELD_WIDTH;
+		}
+
+		public bool AboveGround(Point offset)
 		{
 			return offset.Y + Position.Y < Constants.PLAYFIELD_HEIGHT;
 		}
