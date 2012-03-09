@@ -86,6 +86,11 @@ namespace stackenblochen
 			Position.Y += p.Y;
 		}
 
+		public int CompareRow(int row)
+		{
+			return Position.Y.CompareTo(row);
+		}
+
 		// Draw this Nibbit, pass in the offset of the parent block in nibbits
 		public void Draw(Point offset)
 		{

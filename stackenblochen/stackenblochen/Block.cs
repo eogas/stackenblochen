@@ -56,7 +56,8 @@ namespace stackenblochen
 			this.NibSets = new List<List<Nibbit>>();
 
 			Random r = new Random();
-			this.BlockShape = (Constants.Shape)r.Next(Constants.NUM_SHAPES);
+			//this.BlockShape = (Constants.Shape)r.Next(Constants.NUM_SHAPES);
+			this.BlockShape = Constants.Shape.I;
 
 			switch (BlockShape)
 			{
@@ -247,7 +248,7 @@ namespace stackenblochen
 				default: throw new Exception("Block.Block(): Invalid shape!");
 			}
 
-			this.Position = new Point((Constants.PLAYFIELD_WIDTH - BlockSize) / 2, -BlockSize + 1);
+			this.Position = new Point((Constants.PLAYFIELD_WIDTH - BlockSize) / 2, -BlockSize);
 			//this.Position = new Point(2, 2);
 		}
 

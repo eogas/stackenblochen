@@ -18,6 +18,7 @@ namespace stackenblochen
 
 		Block CurrentBlock;
 		List<Nibbit> LockedNibbits;
+		List<int> RowsToDrop;
 		KeyboardState lastKBState;
 
 		double lastSeconds = 0;
@@ -28,6 +29,7 @@ namespace stackenblochen
 			graphics = new GraphicsDeviceManager(this);
 			graphics.PreferredBackBufferWidth = Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE;
 			graphics.PreferredBackBufferHeight = Constants.PLAYFIELD_HEIGHT * Constants.NIBBIT_SIZE;
+			this.IsFixedTimeStep = false;
 
 			Content.RootDirectory = "Content";
 		}
@@ -36,6 +38,7 @@ namespace stackenblochen
 		{
 			LockedNibbits = new List<Nibbit>();
 			lastKBState = Keyboard.GetState();
+			RowsToDrop = new List<int>();
 
 			base.Initialize();
 		}
@@ -73,6 +76,45 @@ namespace stackenblochen
 
 			// Test against edges
 			return b.InBounds();
+		}
+
+		private void RemoveRows()
+		{
+			Console.WriteLine("RemoveRows()");
+			bool fullRow;
+			for (int y = Constants.PLAYFIELD_HEIGHT - 1; y >= 0; y--)
+			{
+				fullRow = true;
+				for (int x = 0; x < Constants.PLAYFIELD_WIDTH; x++)
+				{
+					Nibbit temp = new Nibbit(Color.White, new Point(x, y), GraphicsDevice);
+					if (!LockedNibbits.Contains(temp))
+					{
+						fullRow = false;
+						break;
+					}
+				}
+
+				if (fullRow)
+				{
+					// Lambda expression bitches!  Remove all Nibbets in row y!
+					LockedNibbits.RemoveAll(n => n.CompareRow(y) == 0);
+					RowsToDrop.Insert(0, y);
+				}
+			}
+		}
+
+		private void DropRows()
+		{
+			Console.WriteLine("DropRows()");
+			foreach (int row in RowsToDrop)
+			{
+				Console.WriteLine("Dropping row {0}", row);
+				foreach (Nibbit nib in LockedNibbits.FindAll(n => n.CompareRow(row) < 0))
+					nib.Offset(new Point(0, 1));
+			}
+
+			RowsToDrop.Clear();
 		}
 
 		protected override void Update(GameTime gameTime)
@@ -113,17 +155,27 @@ namespace stackenblochen
 
 			if (lastSeconds >= dropDelay)
 			{
-				Block newBlock = new Block(CurrentBlock);
-				newBlock.Translate(new Point(0, 1));
-
-				// lock block
-				if (!newBlock.AboveGround() || !ValidPosition(newBlock))
+				Console.WriteLine("Step() - {0}", gameTime.TotalGameTime.Seconds);
+				// Do we need to drop some rows?
+				if (RowsToDrop.Count != 0)
 				{
-					LockedNibbits.AddRange(CurrentBlock.EmancipateNibbits());
-					CurrentBlock = new Block(GraphicsDevice);
+					DropRows();
 				}
-				else
-					CurrentBlock = newBlock;
+				else // move the current piece down
+				{
+					Block newBlock = new Block(CurrentBlock);
+					newBlock.Translate(new Point(0, 1));
+
+					// lock block
+					if (!newBlock.AboveGround() || !ValidPosition(newBlock))
+					{
+						LockedNibbits.AddRange(CurrentBlock.EmancipateNibbits());
+						RemoveRows();
+						CurrentBlock = new Block(GraphicsDevice);
+					}
+					else
+						CurrentBlock = newBlock;
+				}
 
 				lastSeconds = 0;
 			}
