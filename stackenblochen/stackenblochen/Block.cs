@@ -56,8 +56,7 @@ namespace stackenblochen
 			this.NibSets = new List<List<Nibbit>>();
 
 			Random r = new Random();
-			//this.BlockShape = (Constants.Shape)r.Next(Constants.NUM_SHAPES);
-			this.BlockShape = Constants.Shape.I;
+			this.BlockShape = (Constants.Shape)r.Next(Constants.NUM_SHAPES);
 
 			switch (BlockShape)
 			{
