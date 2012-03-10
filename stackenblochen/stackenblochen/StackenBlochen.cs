@@ -22,12 +22,17 @@ namespace stackenblochen
 		KeyboardState lastKBState;
 
 		double lastSeconds = 0;
-		double dropDelay = 1;
+		double dropDelay = 0.5;
+		int currentScore = 0;
+		int[] scores = new int[4] { 100, 300, 500, 800 };
+
+		SpriteFont scoreFont;
+		Texture2D midpointLine;
 
 		public StackenBlochen()
 		{
 			graphics = new GraphicsDeviceManager(this);
-			graphics.PreferredBackBufferWidth = Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE;
+			graphics.PreferredBackBufferWidth = 2 * Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE;
 			graphics.PreferredBackBufferHeight = Constants.PLAYFIELD_HEIGHT * Constants.NIBBIT_SIZE;
 			this.IsFixedTimeStep = false;
 
@@ -48,6 +53,9 @@ namespace stackenblochen
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
+			midpointLine = new Texture2D(GraphicsDevice, 1, 1);
+			midpointLine.SetData(new Color[] { Color.Black });
+			scoreFont = Content.Load<SpriteFont>("Consolas");
 			CurrentBlock = new Block(GraphicsDevice);
 		}
 
@@ -78,9 +86,9 @@ namespace stackenblochen
 			return b.InBounds();
 		}
 
+		// TODO: Make this faster
 		private void RemoveRows()
 		{
-			Console.WriteLine("RemoveRows()");
 			bool fullRow;
 			for (int y = Constants.PLAYFIELD_HEIGHT - 1; y >= 0; y--)
 			{
@@ -106,56 +114,20 @@ namespace stackenblochen
 
 		private void DropRows()
 		{
-			Console.WriteLine("DropRows()");
 			foreach (int row in RowsToDrop)
 			{
-				Console.WriteLine("Dropping row {0}", row);
 				foreach (Nibbit nib in LockedNibbits.FindAll(n => n.CompareRow(row) < 0))
 					nib.Offset(new Point(0, 1));
 			}
 
+			currentScore += scores[RowsToDrop.Count - 1];
 			RowsToDrop.Clear();
 		}
 
 		protected override void Update(GameTime gameTime)
 		{
-			if (KeyPressed(Keys.Left))
-			{
-				Block newBlock = new Block(CurrentBlock);
-				newBlock.Translate(new Point(-1, 0));
-
-				if (ValidPosition(newBlock))
-					CurrentBlock = newBlock;
-			}
-			
-			if (KeyPressed(Keys.Right))
-			{
-				Block newBlock = new Block(CurrentBlock);
-				newBlock.Translate(new Point(1, 0));
-
-				if (ValidPosition(newBlock))
-					CurrentBlock = newBlock;
-			}
-			
-			if (KeyPressed(Keys.Up))
-			{
-				Block newBlock = new Block(CurrentBlock);
-				newBlock.Rotate(true);
-
-				if (ValidPosition(newBlock))
-					CurrentBlock = newBlock;
-			}
-
-			if (Keyboard.GetState().IsKeyDown(Keys.Down))
-				dropDelay = 0.125;
-			else
-				dropDelay = 1;
-
-			lastKBState = Keyboard.GetState();
-
 			if (lastSeconds >= dropDelay)
 			{
-				Console.WriteLine("Step() - {0}", gameTime.TotalGameTime.Seconds);
 				// Do we need to drop some rows?
 				if (RowsToDrop.Count != 0)
 				{
@@ -180,7 +152,41 @@ namespace stackenblochen
 				lastSeconds = 0;
 			}
 
+			if (KeyPressed(Keys.Left))
+			{
+				Block newBlock = new Block(CurrentBlock);
+				newBlock.Translate(new Point(-1, 0));
+
+				if (ValidPosition(newBlock))
+					CurrentBlock = newBlock;
+			}
+
+			if (KeyPressed(Keys.Right))
+			{
+				Block newBlock = new Block(CurrentBlock);
+				newBlock.Translate(new Point(1, 0));
+
+				if (ValidPosition(newBlock))
+					CurrentBlock = newBlock;
+			}
+
+			if (KeyPressed(Keys.Up))
+			{
+				Block newBlock = new Block(CurrentBlock);
+				newBlock.Rotate(true);
+
+				if (ValidPosition(newBlock))
+					CurrentBlock = newBlock;
+			}
+
+			if (Keyboard.GetState().IsKeyDown(Keys.Down))
+				dropDelay = 0.0625;
+			else
+				dropDelay = 0.5;
+
+			lastKBState = Keyboard.GetState();
 			lastSeconds += gameTime.ElapsedGameTime.TotalSeconds;
+
 			base.Update(gameTime);
 		}
 
@@ -192,6 +198,18 @@ namespace stackenblochen
 
 			foreach (Nibbit n in LockedNibbits)
 				n.Draw(Point.Zero);
+
+			spriteBatch.Begin();
+
+			spriteBatch.Draw(midpointLine,
+				new Rectangle(Constants.NIBBIT_SIZE * Constants.PLAYFIELD_WIDTH, 0, 1,
+				Constants.NIBBIT_SIZE * Constants.PLAYFIELD_HEIGHT), Color.Black);
+
+			spriteBatch.DrawString(scoreFont, "Score: " + currentScore.ToString(),
+				new Vector2(Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE + 10, 5),
+				Color.Black);
+
+			spriteBatch.End();
 
 			base.Draw(gameTime);
 		}
