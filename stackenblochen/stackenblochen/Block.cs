@@ -91,10 +91,10 @@ namespace stackenblochen
 					BlockSize = 2;
 
 					NibSets.Add(new List<Nibbit>());
-					NibSets[0].Add(new Nibbit(Color.Yellow, new Point(0, 0), device));
-					NibSets[0].Add(new Nibbit(Color.Yellow, new Point(0, 1), device));
-					NibSets[0].Add(new Nibbit(Color.Yellow, new Point(1, 0), device));
-					NibSets[0].Add(new Nibbit(Color.Yellow, new Point(1, 1), device));
+					NibSets[0].Add(new Nibbit(Color.Gold, new Point(0, 0), device));
+					NibSets[0].Add(new Nibbit(Color.Gold, new Point(0, 1), device));
+					NibSets[0].Add(new Nibbit(Color.Gold, new Point(1, 0), device));
+					NibSets[0].Add(new Nibbit(Color.Gold, new Point(1, 1), device));
 
 					break;
 
@@ -107,28 +107,28 @@ namespace stackenblochen
 					BlockSize = 3;
 
 					NibSets.Add(new List<Nibbit>());
-					NibSets[0].Add(new Nibbit(Color.Blue, new Point(0, 1), device));
-					NibSets[0].Add(new Nibbit(Color.Blue, new Point(1, 1), device));
-					NibSets[0].Add(new Nibbit(Color.Blue, new Point(2, 1), device));
-					NibSets[0].Add(new Nibbit(Color.Blue, new Point(2, 2), device));
+					NibSets[0].Add(new Nibbit(Color.MediumBlue, new Point(0, 1), device));
+					NibSets[0].Add(new Nibbit(Color.MediumBlue, new Point(1, 1), device));
+					NibSets[0].Add(new Nibbit(Color.MediumBlue, new Point(2, 1), device));
+					NibSets[0].Add(new Nibbit(Color.MediumBlue, new Point(2, 2), device));
 
 					NibSets.Add(new List<Nibbit>());
-					NibSets[1].Add(new Nibbit(Color.Blue, new Point(0, 2), device));
-					NibSets[1].Add(new Nibbit(Color.Blue, new Point(1, 0), device));
-					NibSets[1].Add(new Nibbit(Color.Blue, new Point(1, 1), device));
-					NibSets[1].Add(new Nibbit(Color.Blue, new Point(1, 2), device));
+					NibSets[1].Add(new Nibbit(Color.MediumBlue, new Point(0, 2), device));
+					NibSets[1].Add(new Nibbit(Color.MediumBlue, new Point(1, 0), device));
+					NibSets[1].Add(new Nibbit(Color.MediumBlue, new Point(1, 1), device));
+					NibSets[1].Add(new Nibbit(Color.MediumBlue, new Point(1, 2), device));
 
 					NibSets.Add(new List<Nibbit>());
-					NibSets[2].Add(new Nibbit(Color.Blue, new Point(0, 1), device));
-					NibSets[2].Add(new Nibbit(Color.Blue, new Point(0, 2), device));
-					NibSets[2].Add(new Nibbit(Color.Blue, new Point(1, 2), device));
-					NibSets[2].Add(new Nibbit(Color.Blue, new Point(2, 2), device));
+					NibSets[2].Add(new Nibbit(Color.MediumBlue, new Point(0, 1), device));
+					NibSets[2].Add(new Nibbit(Color.MediumBlue, new Point(0, 2), device));
+					NibSets[2].Add(new Nibbit(Color.MediumBlue, new Point(1, 2), device));
+					NibSets[2].Add(new Nibbit(Color.MediumBlue, new Point(2, 2), device));
 
 					NibSets.Add(new List<Nibbit>());
-					NibSets[3].Add(new Nibbit(Color.Blue, new Point(1, 0), device));
-					NibSets[3].Add(new Nibbit(Color.Blue, new Point(1, 1), device));
-					NibSets[3].Add(new Nibbit(Color.Blue, new Point(1, 2), device));
-					NibSets[3].Add(new Nibbit(Color.Blue, new Point(2, 0), device));
+					NibSets[3].Add(new Nibbit(Color.MediumBlue, new Point(1, 0), device));
+					NibSets[3].Add(new Nibbit(Color.MediumBlue, new Point(1, 1), device));
+					NibSets[3].Add(new Nibbit(Color.MediumBlue, new Point(1, 2), device));
+					NibSets[3].Add(new Nibbit(Color.MediumBlue, new Point(2, 0), device));
 
 					break;
 
@@ -141,28 +141,28 @@ namespace stackenblochen
 					BlockSize = 3;
 
 					NibSets.Add(new List<Nibbit>());
-					NibSets[0].Add(new Nibbit(Color.Orange, new Point(0, 1), device));
-					NibSets[0].Add(new Nibbit(Color.Orange, new Point(1, 1), device));
-					NibSets[0].Add(new Nibbit(Color.Orange, new Point(2, 1), device));
-					NibSets[0].Add(new Nibbit(Color.Orange, new Point(0, 2), device));
+					NibSets[0].Add(new Nibbit(Color.DarkOrange, new Point(0, 1), device));
+					NibSets[0].Add(new Nibbit(Color.DarkOrange, new Point(1, 1), device));
+					NibSets[0].Add(new Nibbit(Color.DarkOrange, new Point(2, 1), device));
+					NibSets[0].Add(new Nibbit(Color.DarkOrange, new Point(0, 2), device));
 
 					NibSets.Add(new List<Nibbit>());
-					NibSets[1].Add(new Nibbit(Color.Orange, new Point(0, 0), device));
-					NibSets[1].Add(new Nibbit(Color.Orange, new Point(1, 0), device));
-					NibSets[1].Add(new Nibbit(Color.Orange, new Point(1, 1), device));
-					NibSets[1].Add(new Nibbit(Color.Orange, new Point(1, 2), device));
+					NibSets[1].Add(new Nibbit(Color.DarkOrange, new Point(0, 0), device));
+					NibSets[1].Add(new Nibbit(Color.DarkOrange, new Point(1, 0), device));
+					NibSets[1].Add(new Nibbit(Color.DarkOrange, new Point(1, 1), device));
+					NibSets[1].Add(new Nibbit(Color.DarkOrange, new Point(1, 2), device));
 
 					NibSets.Add(new List<Nibbit>());
-					NibSets[2].Add(new Nibbit(Color.Orange, new Point(0, 2), device));
-					NibSets[2].Add(new Nibbit(Color.Orange, new Point(1, 2), device));
-					NibSets[2].Add(new Nibbit(Color.Orange, new Point(2, 2), device));
-					NibSets[2].Add(new Nibbit(Color.Orange, new Point(2, 1), device));
+					NibSets[2].Add(new Nibbit(Color.DarkOrange, new Point(0, 2), device));
+					NibSets[2].Add(new Nibbit(Color.DarkOrange, new Point(1, 2), device));
+					NibSets[2].Add(new Nibbit(Color.DarkOrange, new Point(2, 2), device));
+					NibSets[2].Add(new Nibbit(Color.DarkOrange, new Point(2, 1), device));
 
 					NibSets.Add(new List<Nibbit>());
-					NibSets[3].Add(new Nibbit(Color.Orange, new Point(1, 0), device));
-					NibSets[3].Add(new Nibbit(Color.Orange, new Point(1, 1), device));
-					NibSets[3].Add(new Nibbit(Color.Orange, new Point(1, 2), device));
-					NibSets[3].Add(new Nibbit(Color.Orange, new Point(2, 2), device));
+					NibSets[3].Add(new Nibbit(Color.DarkOrange, new Point(1, 0), device));
+					NibSets[3].Add(new Nibbit(Color.DarkOrange, new Point(1, 1), device));
+					NibSets[3].Add(new Nibbit(Color.DarkOrange, new Point(1, 2), device));
+					NibSets[3].Add(new Nibbit(Color.DarkOrange, new Point(2, 2), device));
 
 					break;
 

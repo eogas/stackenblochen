@@ -24,6 +24,7 @@ namespace stackenblochen
 		private Color BlockColor;
 		private Point Position;
 		private Rectangle Rect;
+		private Rectangle InnerRect;
 
 		private Texture2D Tex;
 		private SpriteBatch spriteBatch;
@@ -33,6 +34,7 @@ namespace stackenblochen
 			this.BlockColor = n.BlockColor;
 			this.Position = n.Position;
 			this.Rect = n.Rect;
+			this.InnerRect = n.InnerRect;
 			this.Tex = n.Tex;
 			this.spriteBatch = n.spriteBatch;
 		}
@@ -44,29 +46,12 @@ namespace stackenblochen
 			this.BlockColor = color;
 			this.Position = offset;
 			this.Rect = new Rectangle(0, 0, Constants.NIBBIT_SIZE, Constants.NIBBIT_SIZE);
+			this.InnerRect = new Rectangle(Rect.X, Rect.Y, Rect.Width, Rect.Height);
+			this.InnerRect.Inflate(-1, -1);
 
 			spriteBatch = new SpriteBatch(device);
 			this.Tex = new Texture2D(device, 1, 1);
 			this.Tex.SetData(new Color[] { this.BlockColor });
-		}
-
-		public void Transpose()
-		{
-			Point tmp = Position;
-			Position.X = tmp.Y;
-			Position.Y = tmp.X;
-		}
-
-		public void Flip(bool Horizontal, int BlockSize)
-		{
-			if (Horizontal)
-			{
-				Position.X = (BlockSize - 1) - Position.X;
-			}
-			else // vertical
-			{
-				Position.Y = (BlockSize - 1) - Position.Y;
-			}
 		}
 
 		public bool InBounds(Point offset)
