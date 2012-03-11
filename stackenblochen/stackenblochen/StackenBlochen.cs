@@ -11,6 +11,8 @@ using Microsoft.Xna.Framework.Media;
 
 namespace stackenblochen
 {
+	public enum GameState { Start, Play, Pause, Lose }
+
 	public class StackenBlochen : Microsoft.Xna.Framework.Game
 	{
 		GraphicsDeviceManager graphics;
@@ -27,7 +29,11 @@ namespace stackenblochen
 		int[] scores = new int[4] { 100, 300, 500, 800 };
 
 		SpriteFont scoreFont;
-		Texture2D midpointLine;
+		Texture2D pixel;
+		GameState State = GameState.Start;
+
+		Vector2 pauseVec1;
+		Vector2 pauseVec2;
 
 		public StackenBlochen()
 		{
@@ -53,10 +59,22 @@ namespace stackenblochen
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
-			midpointLine = new Texture2D(GraphicsDevice, 1, 1);
-			midpointLine.SetData(new Color[] { Color.Black });
+			// dumb hack, use a 1x1 pixel to draw lines and stuff
+			pixel = new Texture2D(GraphicsDevice, 1, 1);
+			pixel.SetData(new Color[] { Color.White });
+
 			scoreFont = Content.Load<SpriteFont>("Consolas");
 			CurrentBlock = new Block(GraphicsDevice);
+
+			Vector2 tmp = scoreFont.MeasureString("Paused");
+			pauseVec1 = new Vector2(
+				Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE - 0.5f * tmp.X,
+				Constants.PLAYFIELD_HEIGHT * Constants.NIBBIT_SIZE * 0.25f - tmp.Y);
+
+			tmp = scoreFont.MeasureString("Press 'P' to resume");
+			pauseVec2 = new Vector2(
+				Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE - 0.5f * tmp.X,
+				Constants.PLAYFIELD_HEIGHT * Constants.NIBBIT_SIZE * 0.25f);
 		}
 
 		protected override void UnloadContent()
@@ -124,7 +142,7 @@ namespace stackenblochen
 			RowsToDrop.Clear();
 		}
 
-		protected override void Update(GameTime gameTime)
+		private void UpdateBlocks()
 		{
 			if (lastSeconds >= dropDelay)
 			{
@@ -151,7 +169,10 @@ namespace stackenblochen
 
 				lastSeconds = 0;
 			}
+		}
 
+		private void HandleMovement()
+		{
 			if (KeyPressed(Keys.Left))
 			{
 				Block newBlock = new Block(CurrentBlock);
@@ -183,9 +204,37 @@ namespace stackenblochen
 				dropDelay = 0.0625;
 			else
 				dropDelay = 0.5;
+		}
+
+		protected override void Update(GameTime gameTime)
+		{
+			switch (State)
+			{
+				case GameState.Pause:
+					if (KeyPressed(Keys.P))
+						State = GameState.Play;
+					break;
+
+				case GameState.Lose:
+				case GameState.Start:
+					if (KeyPressed(Keys.Enter))
+						State = GameState.Play;
+					break;
+
+				case GameState.Play:
+					if (KeyPressed(Keys.P))
+					{
+						State = GameState.Pause;
+						break;
+					}
+
+					UpdateBlocks();
+					HandleMovement();
+					lastSeconds += gameTime.ElapsedGameTime.TotalSeconds;
+					break;
+			}
 
 			lastKBState = Keyboard.GetState();
-			lastSeconds += gameTime.ElapsedGameTime.TotalSeconds;
 
 			base.Update(gameTime);
 		}
@@ -201,13 +250,30 @@ namespace stackenblochen
 
 			spriteBatch.Begin();
 
-			spriteBatch.Draw(midpointLine,
+			spriteBatch.Draw(pixel,
+				new Rectangle(Constants.NIBBIT_SIZE * Constants.PLAYFIELD_WIDTH, 0,
+					Constants.NIBBIT_SIZE * Constants.PLAYFIELD_WIDTH,
+					Constants.NIBBIT_SIZE * Constants.PLAYFIELD_HEIGHT),
+					Color.WhiteSmoke);
+
+			spriteBatch.Draw(pixel,
 				new Rectangle(Constants.NIBBIT_SIZE * Constants.PLAYFIELD_WIDTH, 0, 1,
-				Constants.NIBBIT_SIZE * Constants.PLAYFIELD_HEIGHT), Color.Black);
+				Constants.NIBBIT_SIZE * Constants.PLAYFIELD_HEIGHT), Color.DarkGray);
 
 			spriteBatch.DrawString(scoreFont, "Score: " + currentScore.ToString(),
 				new Vector2(Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE + 10, 5),
 				Color.Black);
+
+			if (State == GameState.Pause)
+			{
+				spriteBatch.Draw(pixel,
+					new Rectangle(0, 0, Constants.NIBBIT_SIZE * Constants.PLAYFIELD_WIDTH * 2,
+					Constants.NIBBIT_SIZE * Constants.PLAYFIELD_HEIGHT),
+					Color.FromNonPremultiplied(new Vector4(0, 0, 0, 0.5f)));
+
+				spriteBatch.DrawString(scoreFont, "Paused", pauseVec1, Color.White);
+				spriteBatch.DrawString(scoreFont, "Press 'P' to resume", pauseVec2, Color.White);
+			}
 
 			spriteBatch.End();
 
