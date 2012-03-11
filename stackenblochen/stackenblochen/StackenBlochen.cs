@@ -32,8 +32,18 @@ namespace stackenblochen
 		Texture2D pixel;
 		GameState State = GameState.Start;
 
+		// Various rectangles
+		Rectangle midlineRect;
+		Rectangle scoreSideRect;
+		Rectangle pauseOverlayRect;
+		Color pauseOverlayColor;
+
+		// Text location vectors
+		Vector2 gameoverVec;
+		Vector2 startVec;
 		Vector2 pauseVec1;
 		Vector2 pauseVec2;
+		Vector2 scoreVec;
 
 		public StackenBlochen()
 		{
@@ -66,15 +76,50 @@ namespace stackenblochen
 			scoreFont = Content.Load<SpriteFont>("Consolas");
 			CurrentBlock = new Block(GraphicsDevice);
 
+			// Set up various rectangles/lines
+			scoreSideRect = new Rectangle(Constants.NIBBIT_SIZE * Constants.PLAYFIELD_WIDTH, 0,
+					Constants.NIBBIT_SIZE * Constants.PLAYFIELD_WIDTH,
+					Constants.NIBBIT_SIZE * Constants.PLAYFIELD_HEIGHT);
+
+			midlineRect = new Rectangle(Constants.NIBBIT_SIZE * Constants.PLAYFIELD_WIDTH, 0, 1,
+				Constants.NIBBIT_SIZE * Constants.PLAYFIELD_HEIGHT);
+
+			pauseOverlayRect = new Rectangle(0, 0,
+				Constants.NIBBIT_SIZE * Constants.PLAYFIELD_WIDTH * 2,
+				Constants.NIBBIT_SIZE * Constants.PLAYFIELD_HEIGHT);
+			pauseOverlayColor = Color.FromNonPremultiplied(new Vector4(0, 0, 0, 0.5f));
+
+			#region Vectors
+			// Precalculate position vectors for text
 			Vector2 tmp = scoreFont.MeasureString("Paused");
 			pauseVec1 = new Vector2(
-				Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE - 0.5f * tmp.X,
+				Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE - tmp.X * 0.5f,
 				Constants.PLAYFIELD_HEIGHT * Constants.NIBBIT_SIZE * 0.25f - tmp.Y);
 
 			tmp = scoreFont.MeasureString("Press 'P' to resume");
 			pauseVec2 = new Vector2(
-				Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE - 0.5f * tmp.X,
+				Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE - tmp.X * 0.5f,
 				Constants.PLAYFIELD_HEIGHT * Constants.NIBBIT_SIZE * 0.25f);
+
+			tmp = scoreFont.MeasureString("Game Over");
+			gameoverVec = new Vector2(
+				Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE * 0.5f - tmp.X * 0.5f,
+				Constants.PLAYFIELD_HEIGHT * Constants.NIBBIT_SIZE * 0.5f - tmp.Y * 0.5f);
+
+			tmp = scoreFont.MeasureString("Press Enter to play");
+			startVec = new Vector2(
+				Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE * 1.5f - tmp.X * 0.5f,
+				Constants.PLAYFIELD_HEIGHT * Constants.NIBBIT_SIZE * 0.5f - tmp.Y * 0.5f);
+
+			scoreVec = new Vector2(Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE + 10, 5);
+
+			// clamp values to ints otherwise text looks rubbish
+			ClampVector(ref pauseVec1);
+			ClampVector(ref pauseVec2);
+			ClampVector(ref gameoverVec);
+			ClampVector(ref startVec);
+			ClampVector(ref scoreVec);
+			#endregion
 		}
 
 		protected override void UnloadContent()
@@ -206,6 +251,12 @@ namespace stackenblochen
 				dropDelay = 0.5;
 		}
 
+		private void ClampVector(ref Vector2 vector)
+		{
+			vector.X = (int)vector.X;
+			vector.Y = (int)vector.Y;
+		}
+
 		protected override void Update(GameTime gameTime)
 		{
 			switch (State)
@@ -250,29 +301,26 @@ namespace stackenblochen
 
 			spriteBatch.Begin();
 
-			spriteBatch.Draw(pixel,
-				new Rectangle(Constants.NIBBIT_SIZE * Constants.PLAYFIELD_WIDTH, 0,
-					Constants.NIBBIT_SIZE * Constants.PLAYFIELD_WIDTH,
-					Constants.NIBBIT_SIZE * Constants.PLAYFIELD_HEIGHT),
-					Color.WhiteSmoke);
+			spriteBatch.Draw(pixel, scoreSideRect, Color.WhiteSmoke);
+			spriteBatch.Draw(pixel, midlineRect, Color.DarkGray);
 
-			spriteBatch.Draw(pixel,
-				new Rectangle(Constants.NIBBIT_SIZE * Constants.PLAYFIELD_WIDTH, 0, 1,
-				Constants.NIBBIT_SIZE * Constants.PLAYFIELD_HEIGHT), Color.DarkGray);
+			spriteBatch.DrawString(scoreFont, "Score: " + currentScore.ToString(), scoreVec, Color.Black);
 
-			spriteBatch.DrawString(scoreFont, "Score: " + currentScore.ToString(),
-				new Vector2(Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE + 10, 5),
-				Color.Black);
-
-			if (State == GameState.Pause)
+			switch (State)
 			{
-				spriteBatch.Draw(pixel,
-					new Rectangle(0, 0, Constants.NIBBIT_SIZE * Constants.PLAYFIELD_WIDTH * 2,
-					Constants.NIBBIT_SIZE * Constants.PLAYFIELD_HEIGHT),
-					Color.FromNonPremultiplied(new Vector4(0, 0, 0, 0.5f)));
+				case GameState.Pause:
+					spriteBatch.Draw(pixel, pauseOverlayRect, pauseOverlayColor);
+					spriteBatch.DrawString(scoreFont, "Paused", pauseVec1, Color.White);
+					spriteBatch.DrawString(scoreFont, "Press 'P' to resume", pauseVec2, Color.White);
 
-				spriteBatch.DrawString(scoreFont, "Paused", pauseVec1, Color.White);
-				spriteBatch.DrawString(scoreFont, "Press 'P' to resume", pauseVec2, Color.White);
+					break;
+				case GameState.Lose:
+					spriteBatch.DrawString(scoreFont, "Game Over", gameoverVec, Color.Black);
+					spriteBatch.DrawString(scoreFont, "Press Enter to play", startVec, Color.Black);
+					break;
+				case GameState.Start:
+					spriteBatch.DrawString(scoreFont, "Press Enter to play", startVec, Color.Black);
+					break;
 			}
 
 			spriteBatch.End();
