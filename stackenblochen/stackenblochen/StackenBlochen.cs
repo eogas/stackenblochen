@@ -73,7 +73,7 @@ namespace stackenblochen
 			pixel = new Texture2D(GraphicsDevice, 1, 1);
 			pixel.SetData(new Color[] { Color.White });
 
-			scoreFont = Content.Load<SpriteFont>("Consolas");
+			scoreFont = Content.Load<SpriteFont>("Segoe");
 			CurrentBlock = new Block(GraphicsDevice);
 
 			// Set up various rectangles/lines
