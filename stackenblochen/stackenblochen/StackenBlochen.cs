@@ -103,8 +103,8 @@ namespace stackenblochen
 
 			tmp = scoreFont.MeasureString("Game Over");
 			gameoverVec = new Vector2(
-				Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE * 0.5f - tmp.X * 0.5f,
-				Constants.PLAYFIELD_HEIGHT * Constants.NIBBIT_SIZE * 0.5f - tmp.Y * 0.5f);
+				Constants.PLAYFIELD_WIDTH * Constants.NIBBIT_SIZE * 1.5f - tmp.X * 0.5f,
+				Constants.PLAYFIELD_HEIGHT * Constants.NIBBIT_SIZE * 0.5f - tmp.Y * 1.5f);
 
 			tmp = scoreFont.MeasureString("Press Enter to play");
 			startVec = new Vector2(
@@ -210,6 +210,13 @@ namespace stackenblochen
 					}
 					else
 						CurrentBlock = newBlock;
+
+					// Are any nibbits overflowing?
+					foreach (Nibbit n in LockedNibbits)
+					{
+						if (n.CompareRow(0) < 1)
+							State = GameState.Lose;
+					}
 				}
 
 				lastSeconds = 0;
@@ -269,7 +276,10 @@ namespace stackenblochen
 				case GameState.Lose:
 				case GameState.Start:
 					if (KeyPressed(Keys.Enter))
+					{
+						LockedNibbits.Clear();
 						State = GameState.Play;
+					}
 					break;
 
 				case GameState.Play:
