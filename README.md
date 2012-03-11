@@ -2,6 +2,13 @@
 
 A clone of a popular, Russian puzzle game.
 
+### controls
+
+* Left/Right arrows - Move piece left or right
+* Up arrow - Rotate clockwise
+* Down arrow - Soft drop
+* P - Pause
+
 ### screenshots
 
 ![](http://i.imgur.com/LdxH6.png)
