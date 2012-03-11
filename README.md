@@ -2,9 +2,13 @@
 
 A clone of a popular, Russian puzzle game.
 
-### screenshot
+### screenshots
 
-![](http://i.imgur.com/1u8NW.png)
+![](http://i.imgur.com/LdxH6.png)
+
+![](http://i.imgur.com/bgJ5x.png)
+
+![](http://i.imgur.com/cvqOz.png)
 
 ### attribution
 
