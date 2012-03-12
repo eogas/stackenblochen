@@ -278,6 +278,7 @@ namespace stackenblochen
 					if (KeyPressed(Keys.Enter))
 					{
 						LockedNibbits.Clear();
+						currentScore = 0;
 						State = GameState.Play;
 					}
 					break;
